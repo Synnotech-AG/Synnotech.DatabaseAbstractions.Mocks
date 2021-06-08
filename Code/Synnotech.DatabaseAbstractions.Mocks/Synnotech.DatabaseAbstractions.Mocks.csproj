@@ -1,7 +1,43 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+		<Authors>Synnotech AG</Authors>
+        <Company>Synnotech AG</Company>
+        <Copyright>Copyright © Synnotech AG 2021</Copyright>
+        <Version>2.0.0</Version>
+		<Description>Provides types for mocking the abstractions of Synnotech.DatabaseAbstractions.</Description>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <IsPackable>true</IsPackable>
+        <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageIcon>synnotech-logo.png</PackageIcon>
+        <PackageProjectUrl>https://github.com/Synnotech-AG/Synnotech.DatabaseAbstractions.Mocks</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Synnotech-AG/Synnotech.DatabaseAbstractions.Mocks.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReleaseNotes>
+Synntech.DatabaseAbstractions.Mocks 2.0.0
+--------------------------------
+
+- initial release
+- implements base classes for mocks of Synntoch.DatabaseAbstractions 2.0.0
+- see all docs at https://github.com/Synnotech-AG/Synnotech.Synnotech.DatabaseAbstractions.Mocks
+        </PackageReleaseNotes>
+	</PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Synnotech.DatabaseAbstractions" Version="2.0.0" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../../synnotech-logo.png" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
 </Project>
