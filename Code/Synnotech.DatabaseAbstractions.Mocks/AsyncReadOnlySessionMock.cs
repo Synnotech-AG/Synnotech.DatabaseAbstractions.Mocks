@@ -3,7 +3,7 @@
 namespace Synnotech.DatabaseAbstractions.Mocks
 {
     /// <summary>
-    /// Represents a base class for mocks that implement <see cref="IAsyncReadOnlySession" />.
+    /// Represents a base class for mocks that implements <see cref="IAsyncReadOnlySession" />.
     /// </summary>
     /// <typeparam name="T">The subtype that derives from this class.</typeparam>
     public abstract class AsyncReadOnlySessionMock<T> : IAsyncReadOnlySession
