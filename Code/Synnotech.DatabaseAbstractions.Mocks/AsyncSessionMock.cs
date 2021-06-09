@@ -13,14 +13,14 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         /// <summary>
         /// Gets the number of times <see cref="SaveChangesAsync" /> was called.
         /// </summary>
-        public int SaveChangesAsyncCallCount { get; protected set; }
+        public int SaveChangesCallCount { get; protected set; }
 
         /// <summary>
-        /// Increments the <see cref="SaveChangesAsyncCallCount" />.
+        /// Increments the <see cref="SaveChangesCallCount" />.
         /// </summary>
         public Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            SaveChangesAsyncCallCount++;
+            SaveChangesCallCount++;
             return Task.CompletedTask;
         }
 
@@ -30,8 +30,8 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         /// </summary>
         public T SaveChangesMustHaveBeenCalled()
         {
-            if (SaveChangesAsyncCallCount != 1)
-                throw new TestException($"SaveChangesAsync must have been called exactly once, but it was called {SaveChangesAsyncCallCount} times.");
+            if (SaveChangesCallCount != 1)
+                throw new TestException($"SaveChangesAsync must have been called exactly once, but it was called {SaveChangesCallCount} times.");
             return (T) this;
         }
     }
