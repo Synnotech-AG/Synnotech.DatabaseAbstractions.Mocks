@@ -7,7 +7,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks
     /// Represents a base class for mocks that implement <see cref="IAsyncDisposable" /> and <see cref="IDisposable" />.
     /// </summary>
     /// <typeparam name="T">The subtype that derives from this class.</typeparam>
-    public abstract class AsyncDisposableMock<T> : IAsyncDisposable, IDisposable
+    public abstract class AsyncDisposableMock<T> : IAsyncDisposable, IDisposable, IDisposableMock
         where T : AsyncDisposableMock<T>
     {
         /// <summary>

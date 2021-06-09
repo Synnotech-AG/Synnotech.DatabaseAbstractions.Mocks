@@ -6,7 +6,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks
     /// <summary>
     /// Represents a mock that implements <see cref="IAsyncTransaction" />.
     /// </summary>
-    public sealed class AsyncTransactionMock : AsyncDisposableMock<AsyncTransactionMock>, IAsyncTransaction
+    public sealed class AsyncTransactionMock : AsyncDisposableMock<AsyncTransactionMock>, IAsyncTransaction, ITransactionMock
     {
         /// <summary>
         /// Gets the number of times <see cref="CommitAsync" /> was called.
