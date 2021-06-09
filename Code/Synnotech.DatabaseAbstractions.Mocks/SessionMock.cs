@@ -15,7 +15,10 @@
         /// <summary>
         /// Increments the <see cref="SaveChangesCallCount" />.
         /// </summary>
-        public void SaveChanges() => SaveChangesCallCount++;
+        public void SaveChanges()
+        {
+            checked { SaveChangesCallCount++; }
+        }
 
         /// <summary>
         /// Checks if <see cref="SaveChanges" /> has been called exactly once, or otherwise

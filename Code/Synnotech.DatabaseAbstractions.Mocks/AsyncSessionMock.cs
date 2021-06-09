@@ -20,7 +20,8 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         /// </summary>
         public Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            SaveChangesCallCount++;
+            checked { SaveChangesCallCount++; }
+
             return Task.CompletedTask;
         }
 
