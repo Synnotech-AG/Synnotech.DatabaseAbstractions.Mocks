@@ -3,7 +3,16 @@
     /// <summary>
     /// Represents a base class for mocks that implements <see cref="IAsyncReadOnlySession" />.
     /// </summary>
-    /// <typeparam name="T">Your subtype that derives from this class.</typeparam>
+    /// <typeparam name="T">
+    /// The subtype that derives from this class.
+    /// This is used for the return type of the fluent API.
+    /// </typeparam>
     public abstract class AsyncReadOnlySessionMock<T> : AsyncDisposableMock<T>, IAsyncReadOnlySession
         where T : AsyncReadOnlySessionMock<T> { }
+
+    /// <summary>
+    /// Represents a base class for mocks that implements <see cref="IAsyncReadOnlySession" />.
+    /// The return type of the fluent APIs is tied to this base class.
+    /// </summary>
+    public abstract class AsyncReadOnlySessionMock : AsyncReadOnlySessionMock<AsyncReadOnlySessionMock> { }
 }

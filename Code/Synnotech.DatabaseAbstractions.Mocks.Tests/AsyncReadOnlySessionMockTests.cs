@@ -6,8 +6,15 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
     public static class AsyncReadOnlySessionMockTests
     {
         [Fact]
-        public static void MustBeAbstractClass() =>
+        public static void MustBeAbstractClass()
+        {
             typeof(AsyncReadOnlySessionMock<>).Should().BeAbstract();
+            typeof(AsyncReadOnlySessionMock).Should().BeAbstract();
+        }
+
+        [Fact]
+        public static void NonGenericTypeMustDeriveFromGenericType() =>
+            typeof(AsyncReadOnlySessionMock).Should().BeDerivedFrom<AsyncReadOnlySessionMock<AsyncReadOnlySessionMock>>();
 
         [Fact]
         public static void MustDeriveFromAsyncDisposableMock() =>
