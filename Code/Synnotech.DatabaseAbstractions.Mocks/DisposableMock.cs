@@ -5,7 +5,10 @@ namespace Synnotech.DatabaseAbstractions.Mocks
     /// <summary>
     /// Represents a base class for mocks that implement <see cref="IDisposable" />
     /// </summary>
-    /// <typeparam name="T">The subtype that derives from this class.</typeparam>
+    /// <typeparam name="T">
+    /// The subtype that derives from this class.
+    /// This is used for the return type of the fluent API.
+    /// </typeparam>
     public abstract class DisposableMock<T> : IDisposable, IDisposableMock
         where T : DisposableMock<T>
     {
@@ -33,4 +36,10 @@ namespace Synnotech.DatabaseAbstractions.Mocks
             return (T) this;
         }
     }
+
+    /// <summary>
+    /// Represents a base class for mocks that implement <see cref="IDisposable" />.
+    /// The return type of the fluent APIs are tied to this base class.
+    /// </summary>
+    public abstract class DisposableMock : DisposableMock<DisposableMock> { }
 }
