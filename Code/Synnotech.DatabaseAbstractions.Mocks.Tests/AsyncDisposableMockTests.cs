@@ -20,6 +20,10 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
             typeof(AsyncDisposableMock<>).Should().Implement<IAsyncDisposable>();
 
         [Fact]
+        public static void MustImplementIDisposableMock() =>
+            typeof(AsyncDisposableMock<>).Should().Implement<IDisposableMock>();
+
+        [Fact]
         public static void ThrowExceptionWhenNotDisposed()
         {
             var disposable = new DisposableMock();
