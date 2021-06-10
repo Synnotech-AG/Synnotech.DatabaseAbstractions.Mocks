@@ -3,7 +3,10 @@
     /// <summary>
     /// Represents a base class for mocks that implements <see cref="ITransactionalSession" />.
     /// </summary>
-    /// <typeparam name="T">Your subclass that derives from this type.</typeparam>
+    /// <typeparam name="T">
+    /// The subtype that derives from this class.
+    /// It is used as the return type of the fluent API.
+    /// </typeparam>
     public abstract class TransactionalSessionMock<T> : BaseTransactionalSessionMock<TransactionMock, T>, ITransactionalSession
         where T : TransactionalSessionMock<T>
     {
@@ -25,4 +28,10 @@
         /// </summary>
         public ITransaction BeginTransaction() => CreateTransaction();
     }
+
+    /// <summary>
+    /// Represents a base class for mocks that implements <see cref="ITransactionalSession" />.
+    /// The return type of the fluent APIs is tied to this base class.
+    /// </summary>
+    public abstract class TransactionalSessionMock : TransactionalSessionMock<TransactionalSessionMock> { }
 }

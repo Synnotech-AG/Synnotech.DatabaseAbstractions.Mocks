@@ -5,7 +5,7 @@
     /// </summary>
     /// <typeparam name="T">
     /// The subtype that derives from this class.
-    /// This is used as the return type of the fluent API.
+    /// It is used as the return type of the fluent API.
     /// </typeparam>
     public abstract class SessionMock<T> : ReadOnlySessionMock<T>, ISession
         where T : SessionMock<T>
