@@ -6,7 +6,10 @@ namespace Synnotech.DatabaseAbstractions.Mocks
     /// <summary>
     /// Represents a base class for mocks that implements <see cref="IAsyncTransactionalSession" />.
     /// </summary>
-    /// <typeparam name="T">Your subclass that derives from this type.</typeparam>
+    /// <typeparam name="T">
+    /// The subtype that derives from this class.
+    /// It is used as the return type of the fluent API.
+    /// </typeparam>
     public abstract class AsyncTransactionalSessionMock<T> : BaseTransactionalSessionMock<AsyncTransactionMock, T>, IAsyncTransactionalSession
         where T : AsyncTransactionalSessionMock<T>
     {
@@ -32,4 +35,10 @@ namespace Synnotech.DatabaseAbstractions.Mocks
             return Task.FromResult<IAsyncTransaction>(transaction);
         }
     }
+
+    /// <summary>
+    /// Represents a base class for mocks that implements <see cref="IAsyncTransactionalSession" />.
+    /// The return type of the fluent APIs is tied to this base class.
+    /// </summary>
+    public abstract class AsyncTransactionalSessionMock : AsyncTransactionalSessionMock<AsyncTransactionalSessionMock> { }
 }
