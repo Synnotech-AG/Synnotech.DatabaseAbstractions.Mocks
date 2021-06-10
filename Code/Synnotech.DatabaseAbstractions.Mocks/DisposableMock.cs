@@ -29,7 +29,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         /// Checks if this session was disposed (<see cref="DisposeCallCount" /> must be greater or equal to 1),
         /// or otherwise throws a <see cref="TestException" />.
         /// </summary>
-        public T MustBeDisposed()
+        public virtual T MustBeDisposed()
         {
             if (DisposeCallCount < 1)
                 throw new TestException($"\"{GetType().Name}\" was not disposed");

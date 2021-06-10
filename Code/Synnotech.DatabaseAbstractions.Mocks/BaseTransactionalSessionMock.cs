@@ -64,7 +64,13 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         /// <summary>
         /// Checks if all but the last transactions were committed. This method also checks if at least one transaction was started.
         /// </summary>
-        public TSubClass AllTransactionsExceptTheLastMustBeCommitted() => CheckThatTransactionsAreCommitted(Transactions.Count - 1);
+        public TSubClass AllTransactionsExceptTheLastMustBeCommitted()
+        {
+            var lastIndex = Transactions.Count - 1;
+            CheckThatTransactionsAreCommitted(lastIndex);
+            CheckIfTransactionWasRolledBack(lastIndex);
+            return (TSubClass) this;
+        }
 
         /// <summary>
         /// Checks if the specified transactions are committed. This method also checks if at least one transaction was started.
@@ -160,7 +166,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks
                 case 0:
                     throw new TestException($"The {(i + 1).Ordinalize()} transaction was not committed.");
                 case > 1:
-                    throw new TestException($"The {(i + 1).Ordinalize()} transaction was committed to often ({transaction.CommitCallCount} times)");
+                    throw new TestException($"The {(i + 1).Ordinalize()} transaction was committed too often ({transaction.CommitCallCount} times).");
             }
         }
 
