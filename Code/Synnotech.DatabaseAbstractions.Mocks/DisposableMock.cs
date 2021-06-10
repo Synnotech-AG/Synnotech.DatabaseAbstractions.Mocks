@@ -39,7 +39,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks
 
     /// <summary>
     /// Represents a base class for mocks that implement <see cref="IDisposable" />.
-    /// The return type of the fluent APIs are tied to this base class.
+    /// The return type of the fluent APIs is tied to this base class.
     /// </summary>
     public abstract class DisposableMock : DisposableMock<DisposableMock> { }
 }

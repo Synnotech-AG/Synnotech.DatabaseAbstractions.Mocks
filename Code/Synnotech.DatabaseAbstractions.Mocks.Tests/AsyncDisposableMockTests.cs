@@ -8,8 +8,15 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
     public static class AsyncDisposableMockTests
     {
         [Fact]
-        public static void MustBeAbstractClass() =>
+        public static void MustBeAbstractClass()
+        {
             typeof(AsyncDisposableMock<>).Should().BeAbstract();
+            typeof(AsyncDisposableMock).Should().BeAbstract();
+        }
+
+        [Fact]
+        public static void NonGenericTypeMustDeriveFromGenericType() =>
+            typeof(AsyncDisposableMock).Should().BeDerivedFrom<AsyncDisposableMock<AsyncDisposableMock>>();
 
         [Fact]
         public static void MustImplementIDisposable() =>
@@ -26,18 +33,18 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
         [Fact]
         public static void ThrowExceptionWhenNotDisposed()
         {
-            var disposable = new DisposableMock();
+            var disposable = new AsyncDisposable();
 
             Action act = () => disposable.MustBeDisposed();
 
             act.Should().Throw<TestException>()
-               .And.Message.Should().Be("\"DisposableMock\" was not disposed");
+               .And.Message.Should().Be("\"AsyncDisposable\" was not disposed");
         }
 
         [Fact]
         public static void NoExceptionWhenDisposed()
         {
-            var disposable = new DisposableMock();
+            var disposable = new AsyncDisposable();
 
             disposable.Dispose();
 
@@ -47,16 +54,33 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
         [Fact]
         public static async Task NoExceptionWhenDisposedAsync()
         {
-            var disposable = new DisposableMock();
+            var disposable = new AsyncDisposable();
 
             await disposable.DisposeAsync();
 
             disposable.EnsureNoExceptionIsThrown();
         }
 
-        private static void EnsureNoExceptionIsThrown(this DisposableMock disposable) =>
+        private static void EnsureNoExceptionIsThrown(this AsyncDisposable disposable) =>
             disposable.MustBeDisposed().Should().BeSameAs(disposable);
 
-        private sealed class DisposableMock : AsyncDisposableMock<DisposableMock> { }
+        [Fact]
+        public static void CallCountIncrementationMustBeChecked()
+        {
+            var disposable = new AsyncDisposable().SetDisposeCountToMaximum();
+
+            Action act = () => disposable.Dispose();
+
+            act.Should().Throw<OverflowException>();
+        }
+
+        private sealed class AsyncDisposable : AsyncDisposableMock
+        {
+            public AsyncDisposable SetDisposeCountToMaximum()
+            {
+                DisposeCallCount = int.MaxValue;
+                return this;
+            }
+        }
     }
 }
