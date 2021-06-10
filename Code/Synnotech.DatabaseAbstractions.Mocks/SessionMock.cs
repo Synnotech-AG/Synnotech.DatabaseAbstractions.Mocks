@@ -3,7 +3,10 @@
     /// <summary>
     /// Represents a base class for mocks that implements <see cref="ISession" />.
     /// </summary>
-    /// <typeparam name="T">The subtype that derives from this class.</typeparam>
+    /// <typeparam name="T">
+    /// The subtype that derives from this class.
+    /// This is used as the return type of the fluent API.
+    /// </typeparam>
     public abstract class SessionMock<T> : ReadOnlySessionMock<T>, ISession
         where T : SessionMock<T>
     {
@@ -31,4 +34,10 @@
             return (T) this;
         }
     }
+
+    /// <summary>
+    /// Represents a base class for mocks that implements <see cref="ISession" />.
+    /// The return type of the fluent APIs is tied to this base class.
+    /// </summary>
+    public abstract class SessionMock : SessionMock<SessionMock> { }
 }
