@@ -65,13 +65,23 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
             disposable.MustBeDisposed().Should().BeSameAs(disposable);
 
         [Fact]
-        public static void CallCountIncrementationMustBeChecked()
+        public static void SyncCallCountIncrementationMustBeChecked()
         {
             var disposable = new AsyncDisposable().SetDisposeCountToMaximum();
 
             Action act = () => disposable.Dispose();
 
             act.Should().Throw<OverflowException>();
+        }
+
+        [Fact]
+        public static void AsyncCallCountIncrementationMustBeChecked()
+        {
+            var disposable = new AsyncDisposable().SetDisposeCountToMaximum();
+
+            Func<Task> act = () => disposable.DisposeAsync().AsTask();
+
+            act.Should().ThrowAsync<OverflowException>();
         }
 
         private sealed class AsyncDisposable : AsyncDisposableMock
