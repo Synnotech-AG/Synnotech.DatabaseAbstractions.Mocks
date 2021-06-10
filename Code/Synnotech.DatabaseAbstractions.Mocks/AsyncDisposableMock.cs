@@ -8,7 +8,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks
     /// </summary>
     /// <typeparam name="T">
     /// The subtype that derives from this class.
-    /// This is used for the return type of the fluent API.
+    /// This is used as the return type of the fluent API.
     /// </typeparam>
     public abstract class AsyncDisposableMock<T> : IAsyncDisposable, IDisposable, IDisposableMock
         where T : AsyncDisposableMock<T>
