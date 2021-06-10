@@ -8,8 +8,15 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
     public static class AsyncSessionMockTests
     {
         [Fact]
-        public static void MustBeAbstract() =>
+        public static void MustBeAbstract()
+        {
             typeof(AsyncSessionMock<>).Should().BeAbstract();
+            typeof(AsyncSessionMock).Should().BeAbstract();
+        }
+
+        [Fact]
+        public static void NonGenericTypeMustDeriveFromGenericType() =>
+            typeof(AsyncSessionMock).Should().BeDerivedFrom<AsyncSessionMock<AsyncSessionMock>>();
 
         [Fact]
         public static void MustDeriveFromAsyncReadOnlySessionMock() =>
@@ -18,7 +25,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
         [Fact]
         public static void ExceptionWhenSaveChangesWasNotCalled()
         {
-            var session = new SessionMock();
+            var session = new AsyncSession();
 
             session.CheckException(0);
         }
@@ -29,7 +36,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
         [InlineData(23)]
         public static async Task ExceptionWhenSaveChangesAsyncWasCalledTooOften(int numberOfCalls)
         {
-            var session = new SessionMock();
+            var session = new AsyncSession();
 
             for (var i = 0; i < numberOfCalls; i++)
             {
@@ -39,7 +46,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
             session.CheckException(numberOfCalls);
         }
 
-        private static void CheckException(this SessionMock session, int numberOfCalls)
+        private static void CheckException(this AsyncSession session, int numberOfCalls)
         {
             Action act = () => session.SaveChangesMustHaveBeenCalled();
 
@@ -50,13 +57,30 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
         [Fact]
         public static async Task NoExceptionWhenSaveChangesWasCalledExactlyOnce()
         {
-            var session = new SessionMock();
+            var session = new AsyncSession();
 
             await session.SaveChangesAsync();
 
             session.SaveChangesMustHaveBeenCalled().Should().BeSameAs(session);
         }
 
-        private sealed class SessionMock : AsyncSessionMock<SessionMock> { }
+        [Fact]
+        public static void CallCountIncrementationMustBeChecked()
+        {
+            var session = new AsyncSession().SetSaveChangesCallCountToMaximum();
+
+            Func<Task> act = () => session.SaveChangesAsync();
+
+            act.Should().ThrowAsync<OverflowException>();
+        }
+
+        private sealed class AsyncSession : AsyncSessionMock
+        {
+            public AsyncSession SetSaveChangesCallCountToMaximum()
+            {
+                SaveChangesCallCount = int.MaxValue;
+                return this;
+            }
+        }
     }
 }
