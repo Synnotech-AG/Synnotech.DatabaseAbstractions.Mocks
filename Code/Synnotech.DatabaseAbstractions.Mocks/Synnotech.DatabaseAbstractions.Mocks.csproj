@@ -27,7 +27,7 @@ Synntech.DatabaseAbstractions.Mocks 2.0.0
 
 - initial release
 - implements base classes for mocks of Synntoch.DatabaseAbstractions 2.0.0
-- see all docs at https://github.com/Synnotech-AG/Synnotech.Synnotech.DatabaseAbstractions.Mocks
+- see all docs at https://github.com/Synnotech-AG/Synnotech.DatabaseAbstractions.Mocks
         </PackageReleaseNotes>
 	</PropertyGroup>
 
