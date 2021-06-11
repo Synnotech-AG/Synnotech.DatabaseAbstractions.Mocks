@@ -38,7 +38,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
             Action act = () => disposable.MustBeDisposed();
 
             act.Should().Throw<TestException>()
-               .And.Message.Should().Be("\"AsyncDisposable\" was not disposed");
+               .And.Message.Should().Be("\"AsyncDisposable\" was not disposed.");
         }
 
         [Fact]

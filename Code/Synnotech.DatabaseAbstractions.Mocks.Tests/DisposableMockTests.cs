@@ -33,7 +33,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
             Action act = () => disposable.MustBeDisposed();
 
             act.Should().Throw<TestException>()
-               .And.Message.Should().Be($"\"{nameof(Disposable)}\" was not disposed");
+               .And.Message.Should().Be($"\"{nameof(Disposable)}\" was not disposed.");
         }
 
         [Fact]

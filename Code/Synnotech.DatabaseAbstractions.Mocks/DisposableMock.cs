@@ -32,7 +32,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         public virtual T MustBeDisposed()
         {
             if (DisposeCallCount < 1)
-                throw new TestException($"\"{GetType().Name}\" was not disposed");
+                throw new TestException($"\"{GetType().Name}\" was not disposed.");
             return (T) this;
         }
     }

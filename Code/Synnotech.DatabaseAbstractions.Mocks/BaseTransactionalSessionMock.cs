@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Humanizer;
 using Light.GuardClauses;
 using Light.GuardClauses.Exceptions;
@@ -78,16 +77,19 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         /// <param name="indexes">The indexes of the transactions that should be committed.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="indexes" /> is null.</exception>
         /// <exception cref="EmptyCollectionException">Thrown when <paramref name="indexes" /> is an empty array.</exception>
+        /// <exception cref="IndexOutOfRangeException">
+        /// Thrown when any of the specified indexes is less than zero or greater or equal to the count of <see cref="Transactions" />.
+        /// </exception>
         public TSubClass TransactionsWithIndexesMustBeCommitted(params int[] indexes)
         {
             indexes.MustNotBeNullOrEmpty(nameof(indexes));
 
             EnsureTransactionsWereStarted();
 
-            for (var i = 0; i < Transactions.Count; i++)
+            foreach (var index in indexes)
             {
-                if (indexes.Contains(i))
-                    CheckIfTransactionWasCommitted(i);
+                CheckIfIndexIsValid(index);
+                CheckIfTransactionWasCommitted(index);
             }
 
             return (TSubClass) this;
@@ -120,10 +122,10 @@ namespace Synnotech.DatabaseAbstractions.Mocks
 
             EnsureTransactionsWereStarted();
 
-            for (var i = 0; i < Transactions.Count; i++)
+            foreach (var index in indexes)
             {
-                if (indexes.Contains(i))
-                    CheckIfTransactionWasRolledBack(i);
+                CheckIfIndexIsValid(index);
+                CheckIfTransactionWasRolledBack(index);
             }
 
             return (TSubClass) this;
@@ -179,6 +181,12 @@ namespace Synnotech.DatabaseAbstractions.Mocks
                 throw new TestException($"The {(i + 1).Ordinalize()} transaction was not rolled back.");
         }
 
+        private void CheckIfIndexIsValid(int index)
+        {
+            if (index < 0 || index >= Transactions.Count)
+                throw new IndexOutOfRangeException($"There is no transaction that corresponds to index {index}.");
+        }
+
         /// <summary>
         /// Checks if this session and all transactions that were created with it were disposed.
         /// </summary>
@@ -188,7 +196,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks
             {
                 var transaction = Transactions[i];
                 if (transaction.DisposeCallCount == 0)
-                    throw new TestException($"The {(i + 1).Ordinalize()} transaction was not disposed");
+                    throw new TestException($"The {(i + 1).Ordinalize()} transaction was not disposed.");
             }
 
             return base.MustBeDisposed();

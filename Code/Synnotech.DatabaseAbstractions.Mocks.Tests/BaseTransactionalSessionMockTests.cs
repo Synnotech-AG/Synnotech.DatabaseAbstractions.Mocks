@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using Humanizer;
+using Light.GuardClauses.Exceptions;
 using Xunit;
 
 namespace Synnotech.DatabaseAbstractions.Mocks.Tests
@@ -16,7 +18,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
-        public static void ThrowExceptionWhenAPreviousTransactionWasNotDisposedOnBeginTransaction(int indexOfInvalidTransaction)
+        public static void ExceptionWhenAPreviousTransactionWasNotDisposedOnBeginTransaction(int indexOfInvalidTransaction)
         {
             var session = new TransactionalSession();
 
@@ -33,6 +35,61 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
 
             act.Should().Throw<TestException>()
                .And.Message.Should().Be($"The {(indexOfInvalidTransaction + 1).Ordinalize()} transaction was not disposed before the {(indexOfInvalidTransaction + 2).Ordinalize()} transaction was started.");
+        }
+
+        public static class WhenMustBeDisposedIsCalled
+        {
+            [Theory]
+            [InlineData(0)]
+            [InlineData(1)]
+            [InlineData(2)]
+            [InlineData(4)]
+            public static void ExceptionWhenAnyTransactionIsNotDisposed(int indexOfInvalidTransaction)
+            {
+                var session = new TransactionalSession(false);
+                for (var i = 0; i < 5; i++)
+                {
+                    var transaction = session.BeginTransaction();
+                    if (i != indexOfInvalidTransaction)
+                        transaction.Dispose();
+                }
+
+                session.Dispose();
+
+                Action act = () => session.MustBeDisposed();
+
+                act.Should().Throw<TestException>()
+                   .And.Message.Should().Be($"The {(indexOfInvalidTransaction + 1).Ordinalize()} transaction was not disposed.");
+            }
+
+            [Theory]
+            [InlineData(1)]
+            [InlineData(6)]
+            [InlineData(9)]
+            public static void NoExceptionWhenAllTransactionsAreDisposed(int numberOfTransactions)
+            {
+                var session = new TransactionalSession(false);
+                for (var i = 0; i < numberOfTransactions; i++)
+                {
+                    var transaction = session.BeginTransaction();
+                    transaction.Dispose();
+                }
+
+                session.Dispose();
+
+                session.MustBeDisposed().Should().BeSameAs(session);
+            }
+
+            [Fact]
+            public static void ExceptionWhenSessionItselfIsNotDisposed()
+            {
+                var session = new TransactionalSession();
+
+                Action act = () => session.MustBeDisposed();
+
+                act.Should().Throw<TestException>()
+                   .And.Message.Should().Be("\"TransactionalSession\" was not disposed.");
+            }
         }
 
         public static class WhenAllTransactionMustBeCommittedIsCalled
@@ -126,7 +183,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
                 }
 
                 Action act = () => session.AllTransactionsExceptTheLastMustBeCommitted();
-                
+
                 act.ShouldThrowTransactionWasNotRolledBack(numberOfTransactions - 1);
             }
 
@@ -201,6 +258,203 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
                 var session = new TransactionalSession();
 
                 Action act = () => session.AllTransactionsExceptTheLastMustBeCommitted();
+
+                act.ShouldThrowNoTransactionsStartedException();
+            }
+        }
+
+        public static class WhenTransactionsWithIndexesMustBeCommittedIsCalled
+        {
+            [Theory]
+            [InlineData(new[] { 0 })]
+            [InlineData(new[] { 1, 3 })]
+            [InlineData(new[] { 2, 3, 4 })]
+            public static void NoExceptionWhenAllSpecifiedTransactionsAreCommitted(int[] indexesOfCommittedTransactions)
+            {
+                var session = new TransactionalSession();
+
+                for (var i = 0; i < 5; i++)
+                {
+                    var transaction = session.BeginTransaction();
+                    if (indexesOfCommittedTransactions.Contains(i))
+                        transaction.Commit();
+                    transaction.Dispose();
+                }
+
+                session.TransactionsWithIndexesMustBeCommitted(indexesOfCommittedTransactions)
+                       .Should().BeSameAs(session);
+            }
+
+            [Fact]
+            public static void ExceptionWhenAnEmptyArrayIsPassed()
+            {
+                var session = new TransactionalSession();
+
+                Action act = () => session.TransactionsWithIndexesMustBeCommitted(Array.Empty<int>());
+
+                act.Should().Throw<EmptyCollectionException>()
+                   .And.ParamName.Should().Be("indexes");
+            }
+
+            [Fact]
+            public static void ExceptionWhenNullIsPassedForIndexes()
+            {
+                var session = new TransactionalSession();
+
+                Action act = () => session.TransactionsWithIndexesMustBeCommitted(null!);
+
+                act.Should().Throw<ArgumentNullException>()
+                   .And.ParamName.Should().Be("indexes");
+            }
+
+            [Fact]
+            public static void ExceptionWhenNotAllTransactionsAreCommitted()
+            {
+                var session = new TransactionalSession();
+
+                for (var i = 0; i < 5; i++)
+                {
+                    var transaction = session.BeginTransaction();
+                    if (i is 0 or 3 or 4)
+                        transaction.Commit();
+                    transaction.Dispose();
+                }
+
+                Action act = () => session.TransactionsWithIndexesMustBeCommitted(0, 2, 3, 4);
+
+                act.ShouldThrowTransactionWasNotCommitted(2);
+            }
+
+            [Fact]
+            public static void EnsureThatThereIsAtLeastOneTransaction()
+            {
+                var session = new TransactionalSession();
+
+                Action act = () => session.TransactionsWithIndexesMustBeCommitted(42);
+
+                act.ShouldThrowNoTransactionsStartedException();
+            }
+        }
+
+        public static class WhenAllTransactionsMustBeRolledBackIsCalled
+        {
+            [Theory]
+            [InlineData(1)]
+            [InlineData(7)]
+            [InlineData(13)]
+            public static void NoExceptionWhenNoTransactionWasCommitted(int numberOfTransactions)
+            {
+                var session = new TransactionalSession();
+
+                for (var i = 0; i < numberOfTransactions; i++)
+                {
+                    var transaction = session.BeginTransaction();
+                    transaction.Dispose();
+                }
+
+                session.AllTransactionsMustBeRolledBack().Should().BeSameAs(session);
+            }
+
+            [Theory]
+            [InlineData(0)]
+            [InlineData(2)]
+            [InlineData(4)]
+            public static void ExceptionWhenAnyTransactionWasCommitted(int indexOfInvalidTransaction)
+            {
+                var session = new TransactionalSession();
+
+                for (var i = 0; i < 5; i++)
+                {
+                    var transaction = session.BeginTransaction();
+                    if (i == indexOfInvalidTransaction)
+                        transaction.Commit();
+                    transaction.Dispose();
+                }
+
+                Action act = () => session.AllTransactionsMustBeRolledBack();
+
+                act.ShouldThrowTransactionWasNotRolledBack(indexOfInvalidTransaction);
+            }
+
+            [Fact]
+            public static void EnsureThatThereIsAtLeastOneTransaction()
+            {
+                var session = new TransactionalSession();
+
+                Action act = () => session.AllTransactionsMustBeRolledBack();
+
+                act.ShouldThrowNoTransactionsStartedException();
+            }
+        }
+
+        public static class WhenTransactionsWithIndexesMustBeRolledBackIsCalled
+        {
+            [Theory]
+            [InlineData(new[] { 0 })]
+            [InlineData(new[] { 1, 2, 4 })]
+            [InlineData(new[] { 0, 3 })]
+            public static void NoExceptionWhenAllSpecifiedTransactionsAreRolledBack(int[] indexesOfRolledBackTransactions)
+            {
+                var session = new TransactionalSession();
+
+                for (var i = 0; i < 5; i++)
+                {
+                    var transaction = session.BeginTransaction();
+                    if (!indexesOfRolledBackTransactions.Contains(i))
+                        transaction.Commit();
+                    transaction.Dispose();
+                }
+
+                session.TransactionsWithIndexesMustBeRolledBack(indexesOfRolledBackTransactions)
+                       .Should().BeSameAs(session);
+            }
+
+            [Fact]
+            public static void ExceptionWhenAnyOfTheSpecifiedTransactionsIsCommitted()
+            {
+                var session = new TransactionalSession();
+
+                for (var i = 0; i < 5; i++)
+                {
+                    var transaction = session.BeginTransaction();
+                    if (i is 0 or 3)
+                        transaction.Commit();
+                    transaction.Dispose();
+                }
+
+                Action act = () => session.TransactionsWithIndexesMustBeRolledBack(1, 3, 4);
+
+                act.ShouldThrowTransactionWasNotRolledBack(3);
+            }
+
+            [Fact]
+            public static void ExceptionWhenAnEmptyArrayIsPassed()
+            {
+                var session = new TransactionalSession();
+
+                Action act = () => session.TransactionsWithIndexesMustBeRolledBack(Array.Empty<int>());
+
+                act.Should().Throw<EmptyCollectionException>()
+                   .And.ParamName.Should().Be("indexes");
+            }
+
+            [Fact]
+            public static void ExceptionWhenNullIsPassedForIndexes()
+            {
+                var session = new TransactionalSession();
+
+                Action act = () => session.TransactionsWithIndexesMustBeRolledBack(null!);
+
+                act.Should().Throw<ArgumentNullException>()
+                   .And.ParamName.Should().Be("indexes");
+            }
+
+            [Fact]
+            public static void EnsureThatThereIsAtLeastOneTransaction()
+            {
+                var session = new TransactionalSession();
+
+                Action act = () => session.TransactionsWithIndexesMustBeRolledBack(42);
 
                 act.ShouldThrowNoTransactionsStartedException();
             }
