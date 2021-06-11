@@ -1,0 +1,1 @@
+dotnet pack Synnotech.DatabaseAbstractions.Mocks.csproj --configuration Release /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=bin\Synnotech.DatabaseAbstractions.Mocks.snk /p:ContinuousIntegrationBuild=true
