@@ -7,32 +7,18 @@
     /// The subtype that derives from this class.
     /// It is used as the return type of the fluent API.
     /// </typeparam>
-    public abstract class SessionMock<T> : ReadOnlySessionMock<T>, ISession
+    public abstract class SessionMock<T> : BaseSessionMock<T>, ISession
         where T : SessionMock<T>
     {
         /// <summary>
-        /// Gets the number of times <see cref="SaveChanges" /> was called.
+        /// Initializes a new instance of <see cref="SessionMock" />.
         /// </summary>
-        public int SaveChangesCallCount { get; protected set; }
+        protected SessionMock() : base("SaveChanges") { }
 
         /// <summary>
-        /// Increments the <see cref="SaveChangesCallCount" />.
+        /// Increments the SaveChangesCallCount.
         /// </summary>
-        public void SaveChanges()
-        {
-            checked { SaveChangesCallCount++; }
-        }
-
-        /// <summary>
-        /// Checks if <see cref="SaveChanges" /> has been called exactly once, or otherwise
-        /// throws a <see cref="TestException" />.
-        /// </summary>
-        public T SaveChangesMustHaveBeenCalled()
-        {
-            if (SaveChangesCallCount != 1)
-                throw new TestException($"SaveChanges must have been called exactly once, but it was called {SaveChangesCallCount} times.");
-            return (T) this;
-        }
+        public void SaveChanges() => IncrementSaveChangesCallCount();
     }
 
     /// <summary>

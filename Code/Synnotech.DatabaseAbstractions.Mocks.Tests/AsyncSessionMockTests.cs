@@ -20,7 +20,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
 
         [Fact]
         public static void MustDeriveFromAsyncReadOnlySessionMock() =>
-            typeof(AsyncSessionMock<>).Should().BeDerivedFrom(typeof(AsyncReadOnlySessionMock<>));
+            typeof(AsyncSessionMock<>).Should().BeDerivedFrom(typeof(BaseSessionMock<>));
 
         [Fact]
         public static void ExceptionWhenSaveChangesWasNotCalled()
@@ -72,6 +72,26 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
             Func<Task> act = () => session.SaveChangesAsync();
 
             act.Should().ThrowAsync<OverflowException>();
+        }
+
+        [Fact]
+        public static void NoExceptionWhenSaveChangesAsyncWasNotCalled()
+        {
+            var session = new AsyncSession();
+
+            session.SaveChangesMustNotHaveBeenCalled().Should().BeSameAs(session);
+        }
+
+        [Fact]
+        public static async Task ExceptionWhenSaveChangesWasCalled()
+        {
+            var session = new AsyncSession();
+            await session.SaveChangesAsync();
+
+            Action act = () => session.SaveChangesMustNotHaveBeenCalled();
+
+            act.Should().Throw<TestException>()
+               .And.Message.Should().Be("SaveChangesAsync must not have been called, but it was called 1 time.");
         }
 
         private sealed class AsyncSession : AsyncSessionMock
