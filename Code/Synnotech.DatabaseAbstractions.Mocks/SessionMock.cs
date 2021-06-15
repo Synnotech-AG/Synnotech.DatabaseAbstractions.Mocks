@@ -16,9 +16,10 @@
         protected SessionMock() : base("SaveChanges") { }
 
         /// <summary>
-        /// Increments the SaveChangesCallCount.
+        /// Increments the SaveChangesCallCount and potentially throws
+        /// an exception if ExceptionOnSaveChanges is not null.
         /// </summary>
-        public void SaveChanges() => IncrementSaveChangesCallCount();
+        public void SaveChanges() => SaveChangesInternal();
     }
 
     /// <summary>

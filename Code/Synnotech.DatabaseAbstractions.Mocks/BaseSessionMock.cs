@@ -1,4 +1,5 @@
-﻿using Light.GuardClauses;
+﻿using System;
+using Light.GuardClauses;
 
 namespace Synnotech.DatabaseAbstractions.Mocks
 {
@@ -31,6 +32,13 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         public int SaveChangesCallCount { get; protected set; }
 
         /// <summary>
+        /// Gets or sets the exception that is thrown when SaveChanges is called.
+        /// If this property is null, then no exception will be thrown.
+        /// The default value is null.
+        /// </summary>
+        public Exception? ExceptionOnSaveChanges { get; set; }
+
+        /// <summary>
         /// Checks if SaveChanges has been called exactly once, or otherwise
         /// throws a <see cref="TestException" />.
         /// </summary>
@@ -47,6 +55,26 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         protected void IncrementSaveChangesCallCount()
         {
             checked { SaveChangesCallCount++; }
+        }
+
+        /// <summary>
+        /// Increments the save changes call count (by calling <see cref="SaveChangesCallCount" />) and
+        /// potentially throws an exception (by calling <see cref="ThrowExceptionIfNecessary" />).
+        /// </summary>
+        protected void SaveChangesInternal()
+        {
+            IncrementSaveChangesCallCount();
+            ThrowExceptionIfNecessary();
+        }
+
+        /// <summary>
+        /// Checks if <see cref="ExceptionOnSaveChanges" /> is not null and if that is the case,
+        /// then this exception will be thrown.
+        /// </summary>
+        protected void ThrowExceptionIfNecessary()
+        {
+            if (ExceptionOnSaveChanges != null)
+                throw ExceptionOnSaveChanges;
         }
 
         /// <summary>

@@ -19,11 +19,12 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         protected AsyncSessionMock() : base("SaveChangesAsync") { }
 
         /// <summary>
-        /// Increments the SaveChangesCallCount.
+        /// Increments the SaveChangesCallCount and potentially throws
+        /// an exception if ExceptionOnSaveChanges is not null.
         /// </summary>
         public Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            IncrementSaveChangesCallCount();
+            SaveChangesInternal();
             return Task.CompletedTask;
         }
     }

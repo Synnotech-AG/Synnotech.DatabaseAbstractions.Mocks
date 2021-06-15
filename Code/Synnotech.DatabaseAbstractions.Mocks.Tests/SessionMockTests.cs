@@ -93,6 +93,18 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
                .And.Message.Should().Be("SaveChanges must not have been called, but it was called 1 time.");
         }
 
+        [Fact]
+        public static void ThrowExceptionOnSaveChanges()
+        {
+            var exception = new Exception();
+            var session = new Session { ExceptionOnSaveChanges = exception };
+
+            Action act = () => session.SaveChanges();
+
+            act.Should().Throw<Exception>()
+               .Which.Should().BeSameAs(exception);
+        }
+
         private sealed class Session : SessionMock
         {
             public Session SetSaveChangesCallCountToMaximum()

@@ -94,6 +94,18 @@ namespace Synnotech.DatabaseAbstractions.Mocks.Tests
                .And.Message.Should().Be("SaveChangesAsync must not have been called, but it was called 1 time.");
         }
 
+        [Fact]
+        public static async Task ThrowExceptionOnSaveChanges()
+        {
+            var exception = new Exception();
+            var session = new AsyncSession { ExceptionOnSaveChanges = exception };
+
+            Func<Task> act = () => session.SaveChangesAsync();
+
+            (await act.Should().ThrowAsync<Exception>())
+               .Which.Should().BeSameAs(exception);
+        }
+
         private sealed class AsyncSession : AsyncSessionMock
         {
             public AsyncSession SetSaveChangesCallCountToMaximum()
