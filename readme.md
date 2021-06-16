@@ -110,7 +110,7 @@ In the above unit tests, the `GetContactSessionMock` derives from `AsyncReadOnly
 
 ## Mocking sessions
 
-If your session manipulates data and thus implements `IAsyncSession` or `ISession` for transactional support, you can derive your mocks from the `AsyncSessionMock` or `SessionMock` interfaces. The following example for updating an existing contact shows an asynchronous use case:
+If your session manipulates data and thus implements `IAsyncSession` or `ISession` for transactional support, you can derive your mocks from the `AsyncSessionMock` or `SessionMock` base classes. The following example for updating an existing contact shows an asynchronous use case:
 
 ```csharp
 public interface IUpdateContactSession : IAsyncSession
@@ -205,6 +205,8 @@ public sealed class UpdateContactControllerTests
 
 In the above unit test, `UpdateContactSessionMock` derives from `AsyncSessionMock` which implement `IAsyncSession` and tracks calls to `SaveChangesAsync` and `DiposeAsync`. The methods `SaveChangesMustHaveBeenCalled` and `SaveChangesMustNotHaveBeenCalled` are used to ensure that `SaveChangesAsync` is properly called by the `UpdateContactController`.
 
+By the way, you can throw an arbitrary exception during `SaveChanges` by setting the  `ExceptionOnSaveChanges` property.
+
 ## Tracking session creation
 
 If you use a `Func<TSession>` to create your session instances, you can use the `DelegateSessionFactoryMock<T>` to further enhance your tests - with it, you can check if the session was actually created or not. This is useful in scenarios where you e.g. want to ensure that a session is not created when the incoming DTOs are invalid and a bad request is returned immediately.
@@ -245,7 +247,7 @@ public sealed class UpdateContactControllerTests
 }
 ```
 
-In the above unit test, we use the `CreateSession` property of `DelegateSessionFactoryMock<T>` to get hold of the `Func<IUpdateContactSession>` delegate that creates the session. This delegate is injected into the controller. The session factory tracks calls to `CreateSession` and provides the `OpenSessionMustNotHaveBeenCalled` method to verify that the session has not been requested by the controller. There is also a `OpenSessionMustHaveBeenCalled` method to verify the opposity, namely that the session was created exactly once.
+In the above unit test, we use the `CreateSession` property of `DelegateSessionFactoryMock<T>` to get hold of the `Func<IUpdateContactSession>` delegate that creates the session. This delegate is injected into the controller. The session factory tracks calls to `CreateSession` and provides the `OpenSessionMustNotHaveBeenCalled` method to verify that the session has not been requested by the controller. There is also a `OpenSessionMustHaveBeenCalled` method to verify the opposite, namely that the session was created exactly once.
 
 ## Mocking ISessionFactory&lt;T>
 
@@ -472,9 +474,9 @@ public sealed class UpdateAllProductsJobTests
 }
 ```
 
-In the above unit test, the session is mocked by deriving from `UpdateProductsSessionMock`. The session is injected into the constructor of the job object. Via the `Transactions` property, you can check which transactions were created. The base class also gives you the `AllTransactionsMustBeCommitted` method that checks that each captured transaction was committed exactly once.
+In the above unit test, the session is mocked by deriving from `AsyncTransactionalSessionMock`. The session is injected into the constructor of the job object. Via the `Transactions` property, you can check which transactions were created. The base class also gives you the `AllTransactionsMustBeCommitted` method that checks that each captured transaction was committed exactly once.
 
-The transactional session mocks provide you these assertion methods:
+The transactional session mocks provide you with these assertion methods:
 
 - `AllTransactionsMustBeCommitted`: checks if all transactions were committed.
 - `AllTransactionsExceptTheLastMustBeCommitted`: checks if all transactions are committed, except the last one which must be rolled back. Useful for scenarios where the first failing transaction should stop the whole job.
@@ -482,3 +484,5 @@ The transactional session mocks provide you these assertion methods:
 - `AllTransactionsMustBeRolledBack`: checks that no transaction was committed.
 - `TransactionsWithIndexesMustBeRolledBack`: checks that the specified transactions were rolled back. Simply pass in the indexes of the corresponding transactions. Especially useful when combined with `TransactionsWithIndexesMustBeCommitted`.
 - `MustBeDisposed`: checks if the specified session as well as all tracked transactions were disposed.
+
+Please keep in mind: most ORMs as well as Synnotech.DatabaseAbstractions do not support nested transactions. This is why `AsyncTransactionalSessionMock` (and `TransactionalSessionMock`) checks that the previous transaction has been disposed before a new transaction is started. You can change this behavior by passing `false` to the `ensurePreviousTransactionIsClosed` contructor parameter.
