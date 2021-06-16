@@ -161,7 +161,7 @@ public sealed class UpdateContactControllerTests
     public UpdateContactControllerTests()
     {
         Session = new UpdateContactSessionMock();
-        Controller = new UpdateContactController(() => Session, new UpdateContactDtoValidator())
+        Controller = new UpdateContactController(() => Session, new UpdateContactDtoValidator());
     }
 
     private UpdateContactSessionMock Session { get; }
@@ -204,6 +204,48 @@ public sealed class UpdateContactControllerTests
 ```
 
 In the above unit test, `UpdateContactSessionMock` derives from `AsyncSessionMock` which implement `IAsyncSession` and tracks calls to `SaveChangesAsync` and `DiposeAsync`. The methods `SaveChangesMustHaveBeenCalled` and `SaveChangesMustNotHaveBeenCalled` are used to ensure that `SaveChangesAsync` is properly called by the `UpdateContactController`.
+
+## Tracking session creation
+
+If you use a `Func<TSession>` to create your session instances, you can use the `DelegateSessionFactoryMock<T>` to further enhance your tests - with it, you can check if the session was actually created or not. This is useful in scenarios where you e.g. want to ensure that a session is not created when the incoming DTOs are invalid and a bad request is returned immediately.
+
+The following example tests the same controller as in the example above:
+
+```csharp
+public sealed class UpdateContactControllerTests
+{
+    public UpdateContactControllerTests()
+    {
+        Session = new UpdateContactSessionMock();
+        SessionFactory = new DelegateSessionFactoryMock<IUpdateContactSession>(Session);
+        Controller = new UpdateContactController(SessionFactory.CreateSession, new UpdateContactDtoValidator());
+    }
+
+    private UpdateContactSessionMock Session { get; }
+    private DelegateSessionFactoryMock<IUpdateContactSession> SessionFactory { get; }
+    private UpdateContactController Controller { get; }
+
+    [Fact]
+    public async Task InvalidDto()
+    {
+        var invalidDto = new UpdateContactDto(45, ""); // Name is empty
+
+        var result = await Controller.UpdateContact(invalidDto);
+        
+        SessionFactory.OpenSessionMustNotHaveBeenCalled(); // Use this method to ensure that the session was never requested by the controller
+        Assert.IsType<BadRequestObjectResult>(result.Result);
+    }
+
+    private sealed class UpdateContactSessionMock : AsyncSessionMock, IUpdateContactSession
+    {
+        public Contact? Contact { get; set; }
+
+        public Task<Contact?> GetContactAsync(int id) => Task.FromResult(Contact);
+    }
+}
+```
+
+In the above unit test, we use the `CreateSession` property of `DelegateSessionFactoryMock<T>` to get hold of the `Func<IUpdateContactSession>` delegate that creates the session. This delegate is injected into the controller. The session factory tracks calls to `CreateSession` and provides the `OpenSessionMustNotHaveBeenCalled` method to verify that the session has not been requested by the controller. There is also a `OpenSessionMustHaveBeenCalled` method to verify the opposity, namely that the session was created exactly once.
 
 ## Mocking ISessionFactory&lt;T>
 
