@@ -26,6 +26,8 @@ Synntech.DatabaseAbstractions.Mocks 2.1.0
 -----------------------------------------
 
 - added SessionFactoryMock&lt;T&gt; which implements ISessionFactory&lt;T&gt;
+- added DelegateSessionFactoryMock&lt;T&gt; for Func&lt;TSession&gt; scenarios
+- added possibility to throw exceptions on SaveChanges and SaveChangesAsync
 - see all docs at https://github.com/Synnotech-AG/Synnotech.DatabaseAbstractions.Mocks
         </PackageReleaseNotes>
 	</PropertyGroup>
