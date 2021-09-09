@@ -5,7 +5,7 @@
 		<Authors>Synnotech AG</Authors>
         <Company>Synnotech AG</Company>
         <Copyright>Copyright © Synnotech AG 2021</Copyright>
-        <Version>2.1.0</Version>
+        <Version>3.0.0</Version>
 		<Description>Provides types for mocking the abstractions of Synnotech.DatabaseAbstractions.</Description>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
@@ -22,12 +22,10 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReleaseNotes>
-Synntech.DatabaseAbstractions.Mocks 2.1.0
+Synntech.DatabaseAbstractions.Mocks 3.0.0
 -----------------------------------------
 
-- added SessionFactoryMock&lt;T&gt; which implements ISessionFactory&lt;T&gt;
-- added DelegateSessionFactoryMock&lt;T&gt; for Func&lt;TSession&gt; scenarios
-- added possibility to throw exceptions on SaveChanges and SaveChangesAsync
+- breaking change: mocks for ISessionFactory are now compatible with Synnotech.DatabaseAbstractions 3.0.0
 - see all docs at https://github.com/Synnotech-AG/Synnotech.DatabaseAbstractions.Mocks
         </PackageReleaseNotes>
 	</PropertyGroup>
