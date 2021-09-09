@@ -7,7 +7,7 @@ namespace Synnotech.DatabaseAbstractions.Mocks
     /// Represents the base class for mocks that track how often a session was opened.
     /// </summary>
     /// <typeparam name="TSession">The type of your session. Usually, the abstract type is used.</typeparam>
-    /// <typeparam name="TMock">Your subclass that derives from this classs.</typeparam>
+    /// <typeparam name="TMock">Your subclass that derives from this class.</typeparam>
     public abstract class BaseSessionFactoryMock<TSession, TMock> : AsyncDisposableMock<TMock>
         where TMock : BaseSessionFactoryMock<TSession, TMock>
     {

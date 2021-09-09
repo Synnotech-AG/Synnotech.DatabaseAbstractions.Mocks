@@ -21,10 +21,10 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         /// <summary>
         /// Returns the session to the client and increments the OpenSessionCallCount.
         /// </summary>
-        public Task<T> OpenSessionAsync(CancellationToken cancellationToken = default)
+        public ValueTask<T> OpenSessionAsync(CancellationToken cancellationToken = default)
         {
             IncrementOpenSessionCallCount();
-            return Task.FromResult(Session);
+            return new ValueTask<T>(Session);
         }
     }
 }
