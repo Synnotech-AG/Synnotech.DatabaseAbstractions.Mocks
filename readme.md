@@ -5,7 +5,7 @@
 [![Synnotech Logo](synnotech-large-logo.png)](https://www.synnotech.de/)
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://github.com/Synnotech-AG/Synnotech.DatabaseAbstractions.Mocks/blob/main/LICENSE)
-[![NuGet](https://img.shields.io/badge/NuGet-2.1.0-blue.svg?style=for-the-badge)](https://www.nuget.org/packages/Synnotech.DatabaseAbstractions.Mocks/)
+[![NuGet](https://img.shields.io/badge/NuGet-3.0.0-blue.svg?style=for-the-badge)](https://www.nuget.org/packages/Synnotech.DatabaseAbstractions.Mocks/)
 
 # How to install
 
@@ -13,7 +13,7 @@ Synnotech.DatabaseAbstractions.Mocks is compiled against [.NET Standard 2.0 and 
 
 Synnotech.DatabaseAbstractions.Mocks is available as a [NuGet package](https://www.nuget.org/packages/Synnotech.DatabaseAbstractions.Mocks/) and can be installed via:
 
-- **Package Reference in csproj**: `<PackageReference Include="Synnotech.DatabaseAbstractions.Mocks" Version="2.1.0" />`
+- **Package Reference in csproj**: `<PackageReference Include="Synnotech.DatabaseAbstractions.Mocks" Version="3.0.0" />`
 - **dotnet CLI**: `dotnet add package Synnotech.DatabaseAbstractions.Mocks`
 - **Visual Studio Package Manager Console**: `Install-Package Synnotech.DatabaseAbstractions.Mocks`
 
