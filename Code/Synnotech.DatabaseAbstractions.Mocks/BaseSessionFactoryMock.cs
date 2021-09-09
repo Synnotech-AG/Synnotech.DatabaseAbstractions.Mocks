@@ -16,10 +16,8 @@ namespace Synnotech.DatabaseAbstractions.Mocks
         /// </summary>
         /// <param name="session">The session instance that will be returned when a new session is requested.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="session" /> is null.</exception>
-        protected BaseSessionFactoryMock(TSession session)
-        {
+        protected BaseSessionFactoryMock(TSession session) =>
             Session = session.MustNotBeNullReference(nameof(session));
-        }
 
         /// <summary>
         /// Gets the session instance that will be returned when a new session is requested.
