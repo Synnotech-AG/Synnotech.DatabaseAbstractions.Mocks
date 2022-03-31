@@ -9,7 +9,6 @@ namespace Synnotech.DatabaseAbstractions.Mocks
     /// </summary>
     /// <typeparam name="T">The abstraction that represents your database session.</typeparam>
     public sealed class SessionFactoryMock<T> : BaseSessionFactoryMock<T, SessionFactoryMock<T>>, ISessionFactory<T>
-        where T : IAsyncSession
     {
         /// <summary>
         /// Initializes a new instance of <see cref="SessionFactoryMock{T}" />.
