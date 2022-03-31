@@ -32,9 +32,9 @@ Synntech.DatabaseAbstractions.Mocks 3.1.0
 
     <ItemGroup>
         <PackageReference Include="Synnotech.DatabaseAbstractions" Version="3.0.0" />
-        <PackageReference Include="Humanizer.Core" Version="2.11.10" />
-        <PackageReference Include="Light.GuardClauses" Version="9.0.0" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+        <PackageReference Include="Light.GuardClauses" Version="10.0.0" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>

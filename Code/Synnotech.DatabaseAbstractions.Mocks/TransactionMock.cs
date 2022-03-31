@@ -1,32 +1,31 @@
-﻿namespace Synnotech.DatabaseAbstractions.Mocks
+﻿namespace Synnotech.DatabaseAbstractions.Mocks;
+
+/// <summary>
+/// Represents a mock that implements <see cref="ITransaction" />.
+/// </summary>
+public sealed class TransactionMock : DisposableMock<TransactionMock>, ITransaction, ITransactionMock
 {
     /// <summary>
-    /// Represents a mock that implements <see cref="ITransaction" />.
+    /// Increments the <see cref="CommitCallCount" />.
     /// </summary>
-    public sealed class TransactionMock : DisposableMock<TransactionMock>, ITransaction, ITransactionMock
+    public void Commit()
     {
-        /// <summary>
-        /// Increments the <see cref="CommitCallCount" />.
-        /// </summary>
-        public void Commit()
-        {
-            unchecked { CommitCallCount++; }
-        }
+        unchecked { CommitCallCount++; }
+    }
 
-        /// <summary>
-        /// Gets the number of times <see cref="Commit" /> was called.
-        /// </summary>
-        public int CommitCallCount { get; private set; }
+    /// <summary>
+    /// Gets the number of times <see cref="Commit" /> was called.
+    /// </summary>
+    public int CommitCallCount { get; private set; }
 
-        /// <summary>
-        /// Checks if the transaction was committed exactly once, or otherwise
-        /// throws a <see cref="TestException" />.
-        /// </summary>
-        public TransactionMock MustBeCommitted()
-        {
-            if (CommitCallCount != 1)
-                throw new TestException($"Commit must have been called exactly once, but it was called {CommitCallCount} times.");
-            return this;
-        }
+    /// <summary>
+    /// Checks if the transaction was committed exactly once, or otherwise
+    /// throws a <see cref="TestException" />.
+    /// </summary>
+    public TransactionMock MustBeCommitted()
+    {
+        if (CommitCallCount != 1)
+            throw new TestException($"Commit must have been called exactly once, but it was called {CommitCallCount} times.");
+        return this;
     }
 }
