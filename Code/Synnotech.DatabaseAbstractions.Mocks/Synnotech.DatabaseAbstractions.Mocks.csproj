@@ -5,9 +5,9 @@
 		<Authors>Synnotech AG</Authors>
         <Company>Synnotech AG</Company>
         <Copyright>Copyright © Synnotech AG 2021</Copyright>
-        <Version>3.0.0</Version>
+        <Version>3.1.0</Version>
 		<Description>Provides types for mocking the abstractions of Synnotech.DatabaseAbstractions.</Description>
-        <LangVersion>9.0</LangVersion>
+        <LangVersion>10.0</LangVersion>
         <Nullable>enable</Nullable>
         <IsPackable>true</IsPackable>
         <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
@@ -22,10 +22,10 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReleaseNotes>
-Synntech.DatabaseAbstractions.Mocks 3.0.0
+Synntech.DatabaseAbstractions.Mocks 3.1.0
 -----------------------------------------
 
-- breaking change: mocks for ISessionFactory are now compatible with Synnotech.DatabaseAbstractions 3.0.0
+- The SessionFactoryMock no longer has a generic constraint for IAsyncSession. This allows you to use any type with the session factory mock.
 - see all docs at https://github.com/Synnotech-AG/Synnotech.DatabaseAbstractions.Mocks
         </PackageReleaseNotes>
 	</PropertyGroup>
