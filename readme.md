@@ -5,21 +5,21 @@
 [![Synnotech Logo](synnotech-large-logo.png)](https://www.synnotech.de/)
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://github.com/Synnotech-AG/Synnotech.DatabaseAbstractions.Mocks/blob/main/LICENSE)
-[![NuGet](https://img.shields.io/badge/NuGet-3.0.0-blue.svg?style=for-the-badge)](https://www.nuget.org/packages/Synnotech.DatabaseAbstractions.Mocks/)
+[![NuGet](https://img.shields.io/badge/NuGet-3.1.0-blue.svg?style=for-the-badge)](https://www.nuget.org/packages/Synnotech.DatabaseAbstractions.Mocks/)
 
 # How to install
 
-Synnotech.DatabaseAbstractions.Mocks is compiled against [.NET Standard 2.0 and 2.1](https://docs.microsoft.com/en-us/dotnet/standard/net-standard) and thus supports all major plattforms like .NET 5, .NET Core, .NET Framework 4.6.1 or newer, Mono, Xamarin, UWP, or Unity.
+Synnotech.DatabaseAbstractions.Mocks is compiled against [.NET Standard 2.0 and 2.1](https://docs.microsoft.com/en-us/dotnet/standard/net-standard) and thus supports all major platforms like .NET 6, .NET Core 3.1, .NET Framework 4.6.1 or newer, Mono, Xamarin, UWP, or Unity.
 
 Synnotech.DatabaseAbstractions.Mocks is available as a [NuGet package](https://www.nuget.org/packages/Synnotech.DatabaseAbstractions.Mocks/) and can be installed via:
 
-- **Package Reference in csproj**: `<PackageReference Include="Synnotech.DatabaseAbstractions.Mocks" Version="3.0.0" />`
+- **Package Reference in csproj**: `<PackageReference Include="Synnotech.DatabaseAbstractions.Mocks" Version="3.1.0" />`
 - **dotnet CLI**: `dotnet add package Synnotech.DatabaseAbstractions.Mocks`
 - **Visual Studio Package Manager Console**: `Install-Package Synnotech.DatabaseAbstractions.Mocks`
 
 # What does Synnotech.DatabaseAbstractions.Mocks offer you?
 
-With Synnotech.DatabaseAbstractions.Mocks, you can easily create mock sessions for the different abstractions of [Synnotech.DatabaseAbstractions](https://github.com/Synnotech-AG/Synnotech.DatabaseAbstractions). This libary provides base classes for you that allow you to easily check that a session was correctly disposed, that changes were saved, and transaction committed.
+With Synnotech.DatabaseAbstractions.Mocks, you can easily create mock sessions for the different abstractions of [Synnotech.DatabaseAbstractions](https://github.com/Synnotech-AG/Synnotech.DatabaseAbstractions). This library provides base classes for you that allow you to easily check that a session was correctly disposed, that changes were saved, and transaction committed.
 
 ## Mocking read-only sessions
 
@@ -251,7 +251,7 @@ In the above unit test, we use the `CreateSession` property of `DelegateSessionF
 
 ## Mocking ISessionFactory&lt;T>
 
-If you use a Micro-ORM, you will probably use `ISessionFactory<T>` to intantiate your sessions and open a transaction asynchronously in one go. Please have a look at the following controller - it is largely the same one as in the example above, but this time it uses an `ISessionFactory<T>` to open the session:
+If you use a Micro-ORM, you will probably use `ISessionFactory<T>` to instantiate your sessions and open a transaction asynchronously in one go. Please have a look at the following controller - it is largely the same one as in the example above, but this time it uses an `ISessionFactory<T>` to open the session:
 
 ```csharp
 
@@ -485,4 +485,4 @@ The transactional session mocks provide you with these assertion methods:
 - `TransactionsWithIndexesMustBeRolledBack`: checks that the specified transactions were rolled back. Simply pass in the indexes of the corresponding transactions. Especially useful when combined with `TransactionsWithIndexesMustBeCommitted`.
 - `MustBeDisposed`: checks if the specified session as well as all tracked transactions were disposed.
 
-Please keep in mind: most ORMs as well as Synnotech.DatabaseAbstractions do not support nested transactions. This is why `AsyncTransactionalSessionMock` (and `TransactionalSessionMock`) checks that the previous transaction has been disposed before a new transaction is started. You can change this behavior by passing `false` to the `ensurePreviousTransactionIsClosed` contructor parameter.
+Please keep in mind: most ORMs as well as Synnotech.DatabaseAbstractions do not support nested transactions. This is why `AsyncTransactionalSessionMock` (and `TransactionalSessionMock`) checks that the previous transaction has been disposed before a new transaction is started. You can change this behavior by passing `false` to the `ensurePreviousTransactionIsClosed` constructor parameter.
